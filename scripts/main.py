@@ -21,11 +21,11 @@ import requests
 import xmltodict
 import json
 import pprint
+import pandas as pd
+from pathlib import Path
 from pyserini.search import pysearch
 from tqdm.autonotebook import tqdm
 from dataclasses import dataclass
-import pandas as pd
-from pathlib import Path
 # from https://github.com/gsarti/covid-papers-browser/blob/feature/TREC/trec/exploration.ipynb
 TOPIC_SET_URL = 'https://ir.nist.gov/covidSubmit/data/topics-rnd2.xml'
 INDEX_PATH = 'lucene-index-covid-2020-04-10'
@@ -39,13 +39,6 @@ class PreFetchingDocumentsWithLucene:
     queries: [str]
     searcher: pysearch.SimpleSearcher
     number_of_hits: int = 1000
-
-    @classmethod
-    def from_round_xml(cls, xml, *args, **kwargs):
-        topic_set = xmltodict.parse(topic_set_xml)
-        topics = topic_set['topics']['topic'] # [...,('query', 'coronavirus recovery'),...]
-        queries = [x['query'] for x in topics]
-        return cls(queries, *args, **kwargs)
 
     def __call__(self):
         self.query_hits = {}
@@ -81,6 +74,13 @@ class PreFetchingDocumentsWithLucene:
         metadata.to_csv(out_path)
 
         return out_path
+
+    @classmethod
+    def from_round_xml(cls, xml, *args, **kwargs):
+        topic_set = xmltodict.parse(topic_set_xml)
+        topics = topic_set['topics']['topic'] # [...,('query', 'coronavirus recovery'),...]
+        queries = [x['query'] for x in topics]
+        return cls(queries, *args, **kwargs)
 
 
 searcher = pysearch.SimpleSearcher(INDEX_PATH)
