@@ -10,7 +10,7 @@ import pandas as pd
 # - store result
 print(text2art('COVID-19 Browser'))
 embedder = Embedder()
-es_searcher = ElasticSearcher(index_name='lucene-index-cord19-2020-05-26-bm25')
+es_searcher = ElasticSearcher(index_name='lucene-index-cord19-2020-05-26-bm25', size=1000)
 
 query = 'corona'
 topicid = '10'

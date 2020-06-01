@@ -32,7 +32,8 @@ class ElasticSearcherTableResponse:
 @dataclass
 class ElasticSearcherJSONResponse:
     """This class represents a rensponse from the ElasticSearcher.
-    It parse the raw response to return an array of json.
+    It parse the raw response to return an array of json. For now, access the
+    result with `.json`
     """
     res: dict
     json: list = field(default_factory=list)
@@ -51,6 +52,7 @@ class ElasticSearcher:
     """
     client: Elasticsearch = Elasticsearch()
     index_name: str = 'covid'
+    size: int = 25
 
     def __call__(self, vector: list, topic: str):
         script_query = {
@@ -76,7 +78,7 @@ class ElasticSearcher:
         res = self.client.search(
             index=self.index_name,
             body={
-                "size": 25,
+                "size": self.size,
                 "query": script_query,
                 "_source": {
                     "includes": ["cord_uid", "title", "abstract", 'url', 'topicids']
