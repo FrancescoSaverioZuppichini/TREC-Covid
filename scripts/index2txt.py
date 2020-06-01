@@ -5,7 +5,7 @@ Creazione di una pipeline in Pyserini per fare l'equivalente di quello che facev
 
 """
 # TODO
-- index for lucine
+- index for lucene
 - get queries from challange
 - SimpleSearcher
 # ISSUES
@@ -18,8 +18,6 @@ Creazione di una pipeline in Pyserini per fare l'equivalente di quello che facev
 
 """
 # from https://github.com/gsarti/covid-papers-browser/blob/feature/TREC/trec/exploration.ipynb
-
-
 import requests
 import xmltodict
 import json
@@ -29,6 +27,7 @@ from pathlib import Path
 from pyserini.search import pysearch
 from tqdm.autonotebook import tqdm
 from dataclasses import dataclass
+
 @dataclass
 class PreFetchingDocumentsWithLucene:
     queries: [str]
@@ -97,26 +96,24 @@ if __name__ == '__main__':
     parser.add_argument(
         '--topics',
         type=str,
-        default='https://ir.nist.gov/covidSubmit/data/topics-rnd2.xml',
-        help='Url to the topics xml. The default value is the url to round 2 topics')
+        default='https://ir.nist.gov/covidSubmit/data/topics-rnd3.xml',
+        help='Url to the topics xml. The default value is the url to round 3 topics')
 
     parser.add_argument('--out', type=str, default=None,
-                        help='Path for the generated .txt file. By default the result will be stored using the same name as the index folder + "-mb25"')
+                        help='Dir for the generated .txt file. By default the result will be stored using the same name as the <OUT>/<INDEX_NAME-mb25>')
     parser.add_argument('--hits', type=int, default=1000,
                         help='Number of results returned by lucene for each topic')
     parser.add_argument('--tag', type=str, default='test',
                         help='A tag for this run')
 
     args = parser.parse_args()
-
+    print(f'Using index at {args.index}')
     print('Fetching topics...', end='')
     topic_set_xml = requests.get(args.topics).text
     print('done!')
 
-    if args.out is None:
-        index_path = Path(args.index)
-        args.out = index_path.parent / index_path.stem
-        args.out = str(args.out) + '-bm25.txt'
+    out_filepath = Path(args.out) / Path(args.index).stem
+    out_filepath = str(out_filepath) + '-bm25.txt'
 
     searcher = pysearch.SimpleSearcher(args.index)
     pip = PreFetchingDocumentsWithLucene.from_round_xml(
@@ -124,4 +121,4 @@ if __name__ == '__main__':
     pip.searcher.set_bm25(0.9, 0.4)  # we should open an issue
     pip()
     # pip.to_metadata(Path('./metadata.csv'))
-    pip.to_txt(args.out)
+    pip.to_txt(out_path=out_filepath)
