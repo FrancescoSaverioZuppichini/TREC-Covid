@@ -9,6 +9,9 @@
             "enabled": "true"
         },
         "properties": {
+            "cord_uid": {
+                "type": "text"
+            },
             "title": {
                 "type": "text"
             },
@@ -24,7 +27,9 @@
             "pubmed_id": {
                 "type": "long"
             },
-            "topicids": "array",
+            "topicids": {
+                "type" : "text"
+            },
             "embed": {
                 "type": "dense_vector",
                 "dims": 768

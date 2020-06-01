@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Electra import ELECTRA
+from .Electra import ELECTRA
 from sentence_transformers import models, SentenceTransformer
 
 @dataclass
