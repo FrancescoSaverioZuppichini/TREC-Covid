@@ -1,7 +1,5 @@
-# txt with topicid Q0 docid rank score run-tag
 import pandas as pd
 import pypeln.process as pr
-import argparse
 from tqdm.autonotebook import tqdm
 from pathlib import Path
 
