@@ -24,6 +24,7 @@
             "pubmed_id": {
                 "type": "long"
             },
+            "topicids": "array",
             "embed": {
                 "type": "dense_vector",
                 "dims": 768
