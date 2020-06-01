@@ -27,7 +27,7 @@ class ElasticSearcherTableResponse:
 
     def __str__(self):
         return str(self.table)
-
+ 
 
 @dataclass
 class ElasticSearcherJSONResponse:

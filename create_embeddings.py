@@ -7,13 +7,15 @@ from Project import Project
 from tqdm.autonotebook import tqdm
 import pprint 
 pr = Project()
+# lucene-index-cord19-2020-05-26-bm25
+# tommaso-index-cord19-2020-05-26-bm25
 # prepare the data
-ds = CovidPapersDataset.from_path(pr.data_dir / 'metadata-lucene-index-cord19-2020-05-26-bm25.csv')
+ds = CovidPapersDataset.from_path(pr.data_dir / 'metadata-tommaso-index-cord19-2020-05-19-bm25.csv')
 dl = DataLoader(ds, batch_size=128, num_workers=4, collate_fn=lambda x: x)
 
 with open(pr.base_dir / 'es_index.json', 'r') as f:
     index_file = json.load(f)
-    es_provider = ElasticSearchProvider(index_file, index_name='lucene-index-cord19-2020-05-26-bm25')
+    es_provider = ElasticSearchProvider(index_file, index_name='tommaso-index-cord19-2020-05-19-bm25')
     # see all at http://localhost:9200/lucene-index-cord19-2020-05-26-bm25/_search?pretty=true&q=*:*
 # create the adpater for the data
 es_adapter = CovidPapersEmbeddedAdapter()
