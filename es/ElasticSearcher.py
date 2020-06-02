@@ -49,7 +49,7 @@ class ElasticSearcherJSONResponse:
 class ElasticSearcher:
     """
     This class implements the logic behind searching for a vector in elastic search.
-    """
+    """a
     client: Elasticsearch = Elasticsearch()
     index_name: str = 'covid'
     size: int = 25
