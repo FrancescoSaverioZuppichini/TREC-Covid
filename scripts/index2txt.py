@@ -29,6 +29,7 @@ from pathlib import Path
 from pyserini.search import pysearch
 from tqdm.autonotebook import tqdm
 from dataclasses import dataclass
+
 @dataclass
 class PreFetchingDocumentsWithLucene:
     collection_name: str
@@ -41,13 +42,18 @@ class PreFetchingDocumentsWithLucene:
 
     def __call__(self):
         self.query_hits = {}
-        for topicid in tqdm(self.topics):
+        # print(self.topics.keys())
+        # ids = range(20, 41)
+        bar = tqdm(self.topics)
+        # bar = tqdm(ids)
+
+        for topicid in bar:
             query = self.topics[topicid]['query']
-            # id in our case is just the number of the topics in order
+            bar.set_description(f"[{topicid}]{query[:40]}...")
             self.query_hits[topicid] = self.searcher.search(
                 query, self.number_of_hits)
         # sort dict by topicid
-        self.query_hits = { k: v for k, v in sorted(
+        self.query_hits = {k: v for k, v in sorted(
             self.query_hits.items(), key=lambda x: x[0])}
 
         print(f'Queries completed')
@@ -91,8 +97,8 @@ if __name__ == '__main__':
     out_filepath = str(out_filepath) + '-bm25.txt'
 
     searcher = pysearch.SimpleSearcher(args.index)
-    pip = PreFetchingDocumentsWithLucene(
+    pre_fetching = PreFetchingDocumentsWithLucene(
         args.collection, searcher, number_of_hits=args.hits, tag=args.tag)
-    pip.searcher.set_bm25(0.9, 0.4)  # we should open an issue
-    pip()
-    pip.to_txt(out_path=out_filepath)
+    pre_fetching.searcher.set_bm25(0.9, 0.4)
+    pre_fetching()           
+    pre_fetching.to_txt(out_filepath)
